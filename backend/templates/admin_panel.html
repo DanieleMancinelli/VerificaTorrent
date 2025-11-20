@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Admin Panel</h1>
+            <nav>
+                <span class="user-info">Ciao, {{ session.username }} ({{ user_type }})</span>
+                <a href="/">Home</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="admin-section">
+            <h2>Pannello di Amministrazione</h2>
+            
+            {% if user_type == 'admin' %}
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Utenti Totali</h3>
+                    <p class="stat-number">{{ stats.total_users }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Torrent Totali</h3>
+                    <p class="stat-number">{{ stats.total_torrents }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Commenti Totali</h3>
+                    <p class="stat-number">{{ stats.total_comments }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="admin-grid">
+                <!-- Ultimi Torrent -->
+                <div class="admin-card">
+                    <h3>Ultimi Torrent Caricati</h3>
+                    {% if recent_torrents %}
+                        {% for torrent in recent_torrents %}
+                        <div class="torrent-item">
+                            <strong>{{ torrent.title }}</strong>
+                            <span>{{ torrent.upload_date.strftime('%d/%m/%Y') }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Nessun torrent caricato</p>
+                    {% endif %}
+                </div>
+
+                <!-- Gestione Utenti -->
+                <div class="admin-card">
+                    <h3>Gestione Utenti</h3>
+                    {% if banned_users %}
+                        <h4>Utenti Bannati:</h4>
+                        {% for user in banned_users %}
+                        <div class="user-item">
+                            <strong>{{ user.username }}</strong>
+                            <a href="/admin/unban-user/{{ user._id }}" class="unban-btn">Sbanna</a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Nessun utente bannato</p>
+                    {% endif %}
+                </div>
+                
+                <div class="admin-card">
+                    <h3>Gestione Utenti</h3>
+                    <p>Gestisci tutti gli utenti della piattaforma</p>
+                    <a href="/admin/users" class="view-btn">Gestisci Utenti</a>
+                    
+                    {% if banned_users %}
+                        <h4>Utenti Bannati:</h4>
+                        {% for user in banned_users %}
+                        <div class="user-item">
+                            <strong>{{ user.username }}</strong>
+                            <a href="/admin/unban-user/{{ user._id }}" class="unban-btn">Sbanna</a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>Nessun utente bannato</p>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

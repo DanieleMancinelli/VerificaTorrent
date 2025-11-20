@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Utenti - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Gestione Utenti</h1>
+            <nav>
+                <span class="user-info">Ciao, {{ session.username }} ({{ user_type }})</span>
+                <a href="/admin">Panel Admin</a>
+                <a href="/">Home</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="admin-section">
+            <h2>Gestione Utenti</h2>
+            
+            <div class="users-grid">
+                {% for user in users %}
+                <div class="user-card {% if user.is_banned %}banned{% endif %}">
+                    <div class="user-info">
+                        <h3>{{ user.username }}</h3>
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Tipo:</strong> {{ user.user_type }}</p>
+                        <p><strong>Registrato:</strong> {{ user.registration_date.strftime('%d/%m/%Y') }}</p>
+                        <p><strong>Stato:</strong> 
+                            {% if user.is_banned %}
+                                <span class="banned-status">BANNATO</span>
+                            {% else %}
+                                <span class="active-status">Attivo</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <div class="user-actions">
+                        {% if user.username != session.username %}
+                            {% if not user.is_banned %}
+                                {% if user.user_type in ['admin', 'moderator'] and user_type != 'admin' %}
+                                    <span class="no-action">Solo admin può bannare</span>
+                                {% else %}
+                                    <a href="/admin/ban-user/{{ user.username }}" class="ban-btn" 
+                                       onclick="return confirm('Sei sicuro di voler bannare {{ user.username }}?')">
+                                        🚫 Banna
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a href="/admin/unban-user/{{ user.username }}" class="unban-btn"
+                                   onclick="return confirm('Sei sicuro di voler sbannare {{ user.username }}?')">
+                                    ✅ Sbanna
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <span class="no-action">Questo sei tu</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</body>
+</html>
