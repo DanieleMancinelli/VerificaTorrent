@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Piattaforma Torrent</h1>
+            <nav>
+                {% if session.username %}
+                    <span class="user-info">Ciao, {{ session.username }}</span>
+                    <a href="/logout">Logout</a>
+                    {% if session.user_type in ['moderator', 'admin'] %}
+                        <a href="/admin">Panel</a>
+                    {% endif %}
+                {% else %}
+                    <a href="/login">Login</a>
+                    <a href="/register">Registrati</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="search-section">
+            <h2>Cerca Torrent</h2>
+            <form action="/search" method="GET" class="search-form">
+                <div class="form-group">
+                    <label for="search">Cerca:</label>
+                    <input type="text" id="search" name="search" placeholder="Titolo o descrizione...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">Categoria:</label>
+                    <select id="category" name="category">
+                        <option value="">Tutte</option>
+                        <option value="Film">Film</option>
+                        <option value="Serie TV">Serie TV</option>
+                        <option value="Software">Software</option>
+                        <option value="Musica">Musica</option>
+                        <option value="Libri">Libri</option>
+                        <option value="Documentari">Documentari</option>
+                        <option value="Giochi">Giochi</option>
+                    </select>
+                </div>
+                
+                <button type="submit">Cerca</button>
+            </form>
+
+            {% if session.username %}
+            <div class="upload-section">
+                <a href="/upload" class="upload-btn">➕ Carica Nuovo Torrent</a>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>

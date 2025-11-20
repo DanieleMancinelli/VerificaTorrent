@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Torrent - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Gestione Torrent</h1>
+            <nav>
+                <span class="user-info">Ciao, {{ session.username }}</span>
+                <a href="/admin">Panel Admin</a>
+                <a href="/">Home</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="admin-section">
+            <h2>Gestione Torrent (Copyright)</h2>
+            <p class="admin-description">Cancella torrent che violano il copyright</p>
+            
+            <div class="torrents-list">
+                {% for torrent in torrents %}
+                <div class="torrent-item">
+                    <div class="torrent-info">
+                        <h3>{{ torrent.title }}</h3>
+                        <p><strong>Caricato da:</strong> {{ torrent.uploader_name }}</p>
+                        <p><strong>Download:</strong> {{ torrent.download_count }}</p>
+                        <p><strong>Categorie:</strong> {{ torrent.categories|join(', ') }}</p>
+                    </div>
+                    <div class="torrent-actions">
+                        <a href="/admin/delete-torrent/{{ torrent._id }}" class="delete-btn"
+                           onclick="return confirm('Cancellare il torrent \"{{ torrent.title }}\"?')">
+                            🗑️ Cancella
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</body>
+</html>

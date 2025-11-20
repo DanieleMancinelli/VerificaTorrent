@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Admin Panel</h1>
+            <nav>
+                <span class="user-info">Ciao, {{ session.username }} ({{ user_type }})</span>
+                <a href="/">Home</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="admin-section">
+            <h2>Pannello di Amministrazione</h2>
+            
+            <!-- Statistiche Admin -->
+            {% if user_type == 'admin' %}
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Utenti Totali</h3>
+                    <p class="stat-number">{{ stats.total_users }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Torrent Totali</h3>
+                    <p class="stat-number">{{ stats.total_torrents }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Commenti Totali</h3>
+                    <p class="stat-number">{{ stats.total_comments }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Nuovi Torrent (7gg)</h3>
+                    <p class="stat-number">{{ stats.new_torrents_week }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Grid Funzionalità -->
+            <div class="admin-grid">
+                <!-- Gestione Utenti -->
+                <div class="admin-card">
+                    <h3>👥 Gestione Utenti</h3>
+                    <p>Banna o sbanna utenti della piattaforma</p>
+                    <div class="card-actions">
+                        <a href="/admin/users" class="view-btn">Gestisci Utenti</a>
+                    </div>
+                    {% if banned_users %}
+                    <div class="banned-list">
+                        <h4>Utenti Bannati:</h4>
+                        {% for user in banned_users %}
+                        <div class="user-item">
+                            <strong>{{ user.username }}</strong>
+                            <a href="/admin/unban-user/{{ user.username }}" class="unban-btn"
+                               onclick="return confirm('Sbannare {{ user.username }}?')">
+                                ✅
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Gestione Torrent -->
+                <div class="admin-card">
+                    <h3>📁 Gestione Torrent</h3>
+                    <p>Cancella torrent che violano il copyright</p>
+                    <div class="card-actions">
+                        <a href="/admin/torrents" class="view-btn">Gestisci Torrent</a>
+                    </div>
+                    {% if recent_torrents %}
+                    <div class="recent-list">
+                        <h4>Ultimi Torrent:</h4>
+                        {% for torrent in recent_torrents %}
+                        <div class="torrent-item">
+                            <strong>{{ torrent.title }}</strong>
+                            <span>{{ torrent.upload_date.strftime('%d/%m') }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Gestione Commenti -->
+                <div class="admin-card">
+                    <h3>💬 Gestione Commenti</h3>
+                    <p>Cancella commenti inappropriati o offensivi</p>
+                    <div class="card-actions">
+                        <a href="/admin/comments" class="view-btn">Gestisci Commenti</a>
+                    </div>
+                    <div class="info-box">
+                        <p>Modera i commenti degli utenti per mantenere la comunità sana</p>
+                    </div>
+                </div>
+
+                <!-- Statistiche Avanzate (solo admin) -->
+                {% if user_type == 'admin' %}
+                <div class="admin-card">
+                    <h3>📊 Statistiche Avanzate</h3>
+                    <p>Classifiche e statistiche dettagliate della piattaforma</p>
+                    <div class="card-actions">
+                        <a href="/admin/statistics" class="view-btn">Vedi Statistiche</a>
+                    </div>
+                    <div class="info-box">
+                        <p>• Torrent più popolari<br>• Statistiche per categoria<br>• Andamento download</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Info Permessi -->
+                <div class="admin-card info-card">
+                    <h3>ℹ️ I Tuoi Permessi</h3>
+                    <div class="permissions-list">
+                        {% if user_type == 'moderator' %}
+                        <p>✅ <strong>Moderatore</strong> puoi:</p>
+                        <ul>
+                            <li>Bannare utenti registrati</li>
+                            <li>Cancellare torrent</li>
+                            <li>Cancellare commenti</li>
+                            <li>Gestire contenuti inappropriati</li>
+                        </ul>
+                        <p>❌ <strong>Non puoi</strong> bannare admin o altri moderatori</p>
+                        {% elif user_type == 'admin' %}
+                        <p>👑 <strong>Amministratore</strong> puoi:</p>
+                        <ul>
+                            <li>Tutto ciò che può un moderatore</li>
+                            <li>Bannare moderatori e admin</li>
+                            <li>Accedere alle statistiche avanzate</li>
+                            <li>Gestire completamente la piattaforma</li>
+                        </ul>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Azioni Rapide</h3>
+                <div class="action-buttons">
+                    <a href="/admin/users" class="action-btn">👥 Utenti</a>
+                    <a href="/admin/torrents" class="action-btn">📁 Torrent</a>
+                    <a href="/admin/comments" class="action-btn">💬 Commenti</a>
+                    {% if user_type == 'admin' %}
+                    <a href="/admin/statistics" class="action-btn">📊 Statistiche</a>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

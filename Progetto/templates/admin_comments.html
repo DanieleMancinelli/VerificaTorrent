@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Commenti - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Gestione Commenti</h1>
+            <nav>
+                <span class="user-info">Ciao, {{ session.username }}</span>
+                <a href="/admin">Panel Admin</a>
+                <a href="/">Home</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="admin-section">
+            <h2>Gestione Commenti Inappropriati</h2>
+            
+            <div class="comments-list">
+                {% for comment in comments %}
+                <div class="comment-item">
+                    <div class="comment-info">
+                        <p><strong>Utente:</strong> {{ comment.username }}</p>
+                        <p><strong>Torrent:</strong> {{ comment.torrent_title }}</p>
+                        <p><strong>Valutazione:</strong> {{ comment.rating }} ⭐</p>
+                        <p><strong>Commento:</strong> {{ comment.text }}</p>
+                        <p><strong>Data:</strong> {{ comment.comment_date.strftime('%d/%m/%Y %H:%M') }}</p>
+                    </div>
+                    <div class="comment-actions">
+                        <a href="/admin/delete-comment/{{ comment._id }}" class="delete-btn"
+                           onclick="return confirm('Cancellare questo commento?')">
+                            🗑️ Cancella
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiche - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Statistiche Avanzate</h1>
+            <nav>
+                <span class="user-info">Ciao, {{ session.username }} (ADMIN)</span>
+                <a href="/admin">Panel Admin</a>
+                <a href="/">Home</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="admin-section">
+            <h2>Statistiche Globali</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Torrent Più Popolari</h3>
+                    {% for torrent in popular_torrents %}
+                    <div class="stat-item">
+                        <strong>{{ torrent.title }}</strong>
+                        <span>{{ torrent.download_count }} download</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Nuovi Torrent (Ultima Settimana)</h3>
+                    {% for stat in category_stats %}
+                    <div class="stat-item">
+                        <strong>{{ stat.category }}</strong>
+                        <span>{{ stat.count }} nuovi</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="stat-card">
+                    <h3>Categorie Più Popolari</h3>
+                    {% for cat in popular_categories %}
+                    <div class="stat-item">
+                        <strong>{{ cat.category }}</strong>
+                        <span>{{ cat.count }} torrent</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

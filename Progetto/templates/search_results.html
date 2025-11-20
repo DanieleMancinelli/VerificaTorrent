@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risultati - Piattaforma Torrent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🎬 Piattaforma Torrent</h1>
+            <nav>
+                {% if session.username %}
+                    <span class="user-info">Ciao, {{ session.username }}</span>
+                    <a href="/logout">Logout</a>
+                    {% if session.user_type in ['moderator', 'admin'] %}
+                        <a href="/admin">Panel</a>
+                    {% endif %}
+                {% else %}
+                    <a href="/login">Login</a>
+                    <a href="/register">Registrati</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="search-section">
+            <h2>Risultati della Ricerca</h2>
+            <p>Hai cercato: 
+                <strong>
+                    {% if search %}"{{ search }}"{% endif %}
+                    {% if category %}in {{ category }}{% endif %}
+                </strong>
+            </p>
+            <a href="/" class="back-link">← Nuova ricerca</a>
+
+            {% if session.username %}
+            <div class="upload-section">
+                <a href="/upload" class="upload-btn">➕ Carica Nuovo Torrent</a>
+            </div>
+            {% endif %}
+        </section>
+
+        <section class="results-section">
+            {% if torrents %}
+                <div class="results-grid">
+                    {% for torrent in torrents %}
+                    <div class="torrent-card">
+                        <div class="torrent-header">
+                            <h3 class="torrent-title">{{ torrent.title }}</h3>
+                            <span class="torrent-size">{{ (torrent.size / 1024 / 1024 / 1024)|round(2) }} GB</span>
+                        </div>
+                        
+                        <p class="torrent-description">{{ torrent.description }}</p>
+                        
+                        <div class="categories">
+                            {% for category in torrent.categories %}
+                            <span class="category">{{ category }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="torrent-footer">
+                            <span class="download-count">📥 {{ torrent.download_count }} download</span>
+                            <div class="action-buttons">
+                                <a href="/torrent/{{ torrent._id }}" class="view-btn">
+                                    Visualizza Dettagli
+                                </a>
+                                {% if session.username %}
+                                <a href="/download/{{ torrent._id }}" class="download-btn">
+                                    Scarica .torrent
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <p>Nessun torrent trovato con i criteri di ricerca.</p>
+                    <a href="/" class="back-link">← Torna alla ricerca</a>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+</body>
+</html>
